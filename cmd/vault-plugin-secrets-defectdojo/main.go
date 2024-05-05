@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/hashicorp/go-hclog"
-	hashicups "github.com/hashicorp/vault-guides/plugins/vault-plugin-secrets-hashicups"
+	defectdojo "https://github.com/Jas-car/plugin-defectdojo"
 	"github.com/hashicorp/vault/api"
 	"github.com/hashicorp/vault/sdk/plugin"
 )
@@ -18,7 +18,7 @@ func main() {
 	tlsProviderFunc := api.VaultPluginTLSProvider(tlsConfig)
 
 	err := plugin.Serve(&plugin.ServeOpts{
-		BackendFactoryFunc: hashicups.Factory,
+		BackendFactoryFunc: defectdojo.Factory,
 		TLSProviderFunc:    tlsProviderFunc,
 	})
 	if err != nil {

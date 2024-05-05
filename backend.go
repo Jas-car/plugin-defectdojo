@@ -22,17 +22,17 @@ func Factory(ctx context.Context, conf *logical.BackendConfig) (logical.Backend,
 // hashiCupsBackend defines an object that
 // extends the Vault backend and stores the
 // target API's client.
-type hashiCupsBackend struct {
+type defectdojoBackend struct {
 	*framework.Backend
 	lock   sync.RWMutex
-	client *hashiCupsClient
+	client *defectdojoClient
 }
 
 // backend defines the target API backend
 // for Vault. It must include each path
 // and the secrets it will store.
-func backend() *hashiCupsBackend {
-	var b = hashiCupsBackend{}
+func backend() *defectdojoBackend {
+	var b = defectdojoBackend{}
 
 	b.Backend = &framework.Backend{
 		Help: strings.TrimSpace(backendHelp),
@@ -43,8 +43,16 @@ func backend() *hashiCupsBackend {
 				"role/*",
 			},
 		},
-		Paths:       framework.PathAppend(),
-		Secrets:     []*framework.Secret{},
+		Paths: framework.PathAppend(
+			pathRole(&b),
+			[]*framework.Path{
+				pathConfig(&b),
+				pathCredentials(&b),
+			},
+		),
+		Secrets: []*framework.Secret{
+			b.defectdojoToken(),
+		},
 		BackendType: logical.TypeLogical,
 		Invalidate:  b.invalidate,
 	}
@@ -53,7 +61,7 @@ func backend() *hashiCupsBackend {
 
 // reset clears any client configuration for a new
 // backend to be configured
-func (b *hashiCupsBackend) reset() {
+func (b *defectdojoBackend) reset() {
 	b.lock.Lock()
 	defer b.lock.Unlock()
 	b.client = nil
@@ -61,7 +69,7 @@ func (b *hashiCupsBackend) reset() {
 
 // invalidate clears an existing client configuration in
 // the backend
-func (b *hashiCupsBackend) invalidate(ctx context.Context, key string) {
+func (b *defectdojoBackend) invalidate(ctx context.Context, key string) {
 	if key == "config" {
 		b.reset()
 	}
@@ -69,7 +77,7 @@ func (b *hashiCupsBackend) invalidate(ctx context.Context, key string) {
 
 // getClient locks the backend as it configures and creates a
 // a new client for the target API
-func (b *hashiCupsBackend) getClient(ctx context.Context, s logical.Storage) (*hashiCupsClient, error) {
+func (b *defectdojoBackend) getClient(ctx context.Context, s logical.Storage) (*defectdojoClient, error) {
 	b.lock.RLock()
 	unlockFunc := b.lock.RUnlock
 	defer func() { unlockFunc() }()
@@ -82,12 +90,26 @@ func (b *hashiCupsBackend) getClient(ctx context.Context, s logical.Storage) (*h
 	b.lock.Lock()
 	unlockFunc = b.lock.Unlock
 
-	return nil, fmt.Errorf("need to return client")
+	config, err := getConfig(ctx, s)
+	if err != nil {
+		return nil, err
+	}
+
+	if config == nil {
+		config = new(defectdojoConfig)
+	}
+
+	b.client, err = newClient(config)
+	if err != nil {
+		return nil, err
+	}
+
+	return b.client, nil
 }
 
 // backendHelp should contain help information for the backend
 const backendHelp = `
-The HashiCups secrets backend dynamically generates user tokens.
+The Defectdojo secrets backend dynamically generates user tokens.
 After mounting this backend, credentials to manage HashiCups user tokens
 must be configured with the "config/" endpoints.
 `

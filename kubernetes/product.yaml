@@ -4,7 +4,8 @@ kind: Service
 metadata:
   name: product-api
 spec:
-  type: LoadBalancer
+  #type: LoadBalancer
+  type: ClusterIP
   selector:
     app: product-api
   ports:
