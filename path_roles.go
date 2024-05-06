@@ -90,7 +90,7 @@ func pathRole(b *defectdojoBackend) []*framework.Path {
 }
 
 // pathRolesList makes a request to Vault storage to retrieve a list of roles for the backend
-func (b *defetdojoBackend) pathRolesList(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
+func (b *defectdojoBackend) pathRolesList(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
 	entries, err := req.Storage.List(ctx, "role/")
 	if err != nil {
 		return nil, err
@@ -100,7 +100,7 @@ func (b *defetdojoBackend) pathRolesList(ctx context.Context, req *logical.Reque
 }
 
 // pathRolesRead makes a request to Vault storage to read a role and return response data
-func (b *defetdojoBackend) pathRolesRead(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
+func (b *defectdojoBackend) pathRolesRead(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
 	entry, err := b.getRole(ctx, req.Storage, d.Get("name").(string))
 	if err != nil {
 		return nil, err
@@ -116,7 +116,7 @@ func (b *defetdojoBackend) pathRolesRead(ctx context.Context, req *logical.Reque
 }
 
 // pathRolesWrite makes a request to Vault storage to update a role based on the attributes passed to the role configuration
-func (b *defetdojoBackend) pathRolesWrite(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
+func (b *defectdojoBackend) pathRolesWrite(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
 	name, ok := d.GetOk("name")
 	if !ok {
 		return logical.ErrorResponse("missing role name"), nil
@@ -128,7 +128,7 @@ func (b *defetdojoBackend) pathRolesWrite(ctx context.Context, req *logical.Requ
 	}
 
 	if roleEntry == nil {
-		roleEntry = &hashiCupsRoleEntry{}
+		roleEntry = &defectdojoRoleEntry{}
 	}
 
 	createOperation := (req.Operation == logical.CreateOperation)
@@ -163,7 +163,7 @@ func (b *defetdojoBackend) pathRolesWrite(ctx context.Context, req *logical.Requ
 }
 
 // pathRolesDelete makes a request to Vault storage to delete a role
-func (b *defetdojoBackend) pathRolesDelete(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
+func (b *defectdojoBackend) pathRolesDelete(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
 	err := req.Storage.Delete(ctx, "role/"+d.Get("name").(string))
 	if err != nil {
 		return nil, fmt.Errorf("error deleting hashiCups role: %w", err)

@@ -2,12 +2,11 @@ package secretsengine
 
 import (
 	"context"
-	"errors"
-	"fmt"
+	//"fmt"
 
 	"github.com/google/uuid"
 	"github.com/hashicorp/vault/sdk/framework"
-	"github.com/hashicorp/vault/sdk/logical"
+	//"github.com/hashicorp/vault/sdk/logical"
 )
 
 const (
@@ -37,21 +36,21 @@ func (b *defectdojoBackend) defectdojoToken() *framework.Secret {
 }
 
 // createToken calls the HashiCups client to sign in and returns a new token
-func createToken(ctx context.Context, c *defectdojoClient, username string) (*defectdojoToken, error) {
-	response, err := *c.Token
+func createToken(ctx context.Context, c *defectdojoClient, username string , token string) (*defectdojoToken, error) {
+	//response, err := c.Token
 	//resp, err := c.ApiTokenAuth.Create(ctx, &defectdojo.AuthToken{
 	//	Username: defectdojo.String(&config.Username),
 	//	Password: defectdojo.String(&config.Password),
 	//})	
-	if err != nil {
-		return nil, fmt.Errorf("error creating HashiCups token: %w", err)
-	}
+	//if err != nil {
+	//	return nil, fmt.Errorf("error creating HashiCups token: %w", err)
+	//}
 
 	tokenID := uuid.New().String()
 
 	return &defectdojoToken{
 		Username: username,
 		TokenID:  tokenID,
-		Token:    *c.Token,
+		Token:    token,
 	}, nil
 }

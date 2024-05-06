@@ -2,9 +2,9 @@ package main
 
 import (
 	"os"
-
+    // defectdojo "secretsengine"
 	"github.com/hashicorp/go-hclog"
-	defectdojo "https://github.com/Jas-car/plugin-defectdojo"
+	defectdojo "github.com/Jas-car/plugin-defectdojo"
 	"github.com/hashicorp/vault/api"
 	"github.com/hashicorp/vault/sdk/plugin"
 )

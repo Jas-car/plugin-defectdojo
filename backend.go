@@ -2,7 +2,6 @@ package secretsengine
 
 import (
 	"context"
-	"fmt"
 	"strings"
 	"sync"
 
@@ -77,13 +76,13 @@ func (b *defectdojoBackend) invalidate(ctx context.Context, key string) {
 
 // getClient locks the backend as it configures and creates a
 // a new client for the target API
-func (b *defectdojoBackend) getClient(ctx context.Context, s logical.Storage) (*defectdojoClient, error) {
+func (b *defectdojoBackend) getClient(ctx context.Context, s logical.Storage) (d *defectdojoClient, err error, myToken string ) {
 	b.lock.RLock()
 	unlockFunc := b.lock.RUnlock
 	defer func() { unlockFunc() }()
 
 	if b.client != nil {
-		return b.client, nil
+		return b.client, nil,""
 	}
 
 	b.lock.RUnlock()
@@ -92,19 +91,19 @@ func (b *defectdojoBackend) getClient(ctx context.Context, s logical.Storage) (*
 
 	config, err := getConfig(ctx, s)
 	if err != nil {
-		return nil, err
+		return nil, err,""
 	}
 
 	if config == nil {
 		config = new(defectdojoConfig)
 	}
 
-	b.client, err = newClient(config)
+	b.client, err , myToken = newClient(config, ctx)
 	if err != nil {
-		return nil, err
+		return nil, err,""
 	}
 
-	return b.client, nil
+	return b.client, nil,myToken
 }
 
 // backendHelp should contain help information for the backend

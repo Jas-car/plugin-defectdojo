@@ -60,7 +60,7 @@ func (b *defectdojoBackend) createUserCreds(ctx context.Context, req *logical.Re
 	// The response is divided into two objects (1) internal data and (2) data.
 	// If you want to reference any information in your code, you need to
 	// store it in internal data!
-	resp := b.Secret(hashiCupsTokenType).Response(map[string]interface{}{
+	resp := b.Secret(defectdojoTokenType).Response(map[string]interface{}{
 		"token":    token.Token,
 		"token_id": token.TokenID,
 		"username": token.Username,
@@ -80,15 +80,15 @@ func (b *defectdojoBackend) createUserCreds(ctx context.Context, req *logical.Re
 }
 
 // createToken uses the HashiCups client to sign in and get a new token
-func (b *hashiCupsBackend) createToken(ctx context.Context, s logical.Storage, roleEntry *defectdojoRoleEntry) (*defectdojoToken, error) {
-	client, err := b.getClient(ctx, s)
+func (b *defectdojoBackend) createToken(ctx context.Context, s logical.Storage, roleEntry *defectdojoRoleEntry) (*defectdojoToken, error) {
+	client, err , myToken := b.getClient(ctx, s)
 	if err != nil {
 		return nil, err
 	}
 
 	var token *defectdojoToken
 
-	token, err = createToken(ctx, client, roleEntry.Username)
+	token, err = createToken(ctx, client, roleEntry.Username ,myToken)
 	if err != nil {
 		return nil, fmt.Errorf("error creating HashiCups token: %w", err)
 	}
