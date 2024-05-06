@@ -5,6 +5,8 @@ import (
 	"errors"
 	"context"
 	"encoding/json"
+	"ftm"
+	"os"
 )
 
 // hashiCupsClient creates an object storing
