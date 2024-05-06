@@ -21,10 +21,10 @@ func TestAccUserToken(t *testing.T) {
 		t.SkipNow()
 	}
 	envOptions := &stepwise.MountOptions{
-		RegistryName:    "hashicups",
+		RegistryName:    "defectdojo",
 		PluginType:      stepwise.PluginTypeSecrets,
-		PluginName:      "vault-plugin-secrets-hashicups",
-		MountPathPrefix: "hashicups",
+		PluginName:      "vault-plugin-secrets-defectdojo",
+		MountPathPrefix: "defectdojo",
 	}
 
 	roleName := "vault-stepwise-user-role"
