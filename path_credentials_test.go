@@ -54,5 +54,4 @@ func TestAcceptanceUserToken(t *testing.T) {
 	t.Run("add user token role", acceptanceTestEnv.AddUserTokenRole)
 	t.Run("read user token cred", acceptanceTestEnv.ReadUserToken)
 	t.Run("read user token cred", acceptanceTestEnv.ReadUserToken)
-	t.Run("cleanup user tokens", acceptanceTestEnv.CleanupUserTokens)
 }

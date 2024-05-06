@@ -12,14 +12,14 @@ import (
 
 const (
 	envVarRunAccTests       = "VAULT_ACC"
-	envVarHashiCupsUsername = "TEST_HASHICUPS_USERNAME"
-	envVarHashiCupsPassword = "TEST_HASHICUPS_PASSWORD"
-	envVarHashiCupsURL      = "TEST_HASHICUPS_URL"
+	envVarHashiCupsUsername = "admin"
+	envVarHashiCupsPassword = "1Defectdojo@demo#appsec"
+	envVarHashiCupsURL      = "https://demo.defectdojo.org"
 )
 
 // getTestBackend will help you construct a test backend object.
 // Update this function with your target backend.
-func getTestBackend(tb testing.TB) (*hashiCupsBackend, logical.Storage) {
+func getTestBackend(tb testing.TB) (*defectdojoBackend, logical.Storage) {
 	tb.Helper()
 
 	config := logical.TestBackendConfig()
@@ -32,7 +32,7 @@ func getTestBackend(tb testing.TB) (*hashiCupsBackend, logical.Storage) {
 		tb.Fatal(err)
 	}
 
-	return b.(*hashiCupsBackend), config.StorageView
+	return b.(*defectdojoBackend), config.StorageView
 }
 
 // runAcceptanceTests will separate unit tests from
@@ -121,22 +121,4 @@ func (e *testEnv) ReadUserToken(t *testing.T) {
 	}
 }
 
-// CleanupUserTokens removes the tokens
-// when the test completes.
-func (e *testEnv) CleanupUserTokens(t *testing.T) {
-	if len(e.Tokens) == 0 {
-		t.Fatalf("expected 2 tokens, got: %d", len(e.Tokens))
-	}
 
-	for _, token := range e.Tokens {
-		b := e.Backend.(*hashiCupsBackend)
-		client, err := b.getClient(e.Context, e.Storage)
-		if err != nil {
-			t.Fatal("fatal getting client")
-		}
-		client.Client.Token = string(token)
-		if err := client.SignOut(); err != nil {
-			t.Fatalf("unexpected error deleting user token: %s", err)
-		}
-	}
-}

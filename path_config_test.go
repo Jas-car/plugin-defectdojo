@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	username = "vault-plugin-testing"
-	password = "Testing!123"
-	url      = "http://localhost:19090"
+	username = "admin"
+	password = "1Defectdojo@demo#appsec"
+	url      = "https://demo.defectdojo.org"
 )
 
 // TestConfig mocks the creation, read, update, and delete
